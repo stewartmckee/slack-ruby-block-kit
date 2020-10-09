@@ -11,17 +11,25 @@ module Slack
       class Image
         TYPE = 'image'
 
-        def initialize(image_url:, alt_text:)
-          @image_url = image_url
-          @alt_text = alt_text
+        def initialize(options)
+          @image_url = options[:image_url] || raise('missing argument :image_url')
+          @alt_text = options[:alt_text] || raise('missing argument :alt_text')
+          @title = options[:title]
         end
 
         def as_json(*)
-          {
+          json = {
             type: TYPE,
             image_url: @image_url,
             alt_text: @alt_text
           }
+          unless @title.nil?
+            json[:title] = {
+              type: 'plain_text',
+              text: @title
+            }
+          end
+          json
         end
       end
     end
